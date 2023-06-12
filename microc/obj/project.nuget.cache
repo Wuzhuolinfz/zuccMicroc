@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "qTb8FjMdFF88vZE2a9pBp8fw/q1taYEG55Rc3Q9bJeulMmHqnKZJgEUXOhKk1C5o+a/UC2BFmgdZ8KESR8GvCA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\11706\\Desktop\\编程语言原理与应用\\plzoofs-master\\microc\\microc.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\11706\\.nuget\\packages\\fsharp.core\\6.0.7\\fsharp.core.6.0.7.nupkg.sha512",
+    "C:\\Users\\11706\\.nuget\\packages\\fslexyacc\\10.2.0\\fslexyacc.10.2.0.nupkg.sha512",
+    "C:\\Users\\11706\\.nuget\\packages\\fslexyacc.runtime\\10.2.0\\fslexyacc.runtime.10.2.0.nupkg.sha512"
+  ],
+  "logs": []
+}
