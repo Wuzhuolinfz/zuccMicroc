@@ -238,11 +238,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\11706\\Desktop\\编程语言原理与应用\\plzoofs-master\\microc\\microc.fsproj",
+      "projectUniqueName": "D:\\zuccmicroc\\zuccMicroc\\microc\\microc.fsproj",
       "projectName": "microc",
-      "projectPath": "C:\\Users\\11706\\Desktop\\编程语言原理与应用\\plzoofs-master\\microc\\microc.fsproj",
+      "projectPath": "D:\\zuccmicroc\\zuccMicroc\\microc\\microc.fsproj",
       "packagesPath": "C:\\Users\\11706\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\11706\\Desktop\\编程语言原理与应用\\plzoofs-master\\microc\\obj\\",
+      "outputPath": "D:\\zuccmicroc\\zuccMicroc\\microc\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\11706\\AppData\\Roaming\\NuGet\\NuGet.Config"
