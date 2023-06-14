@@ -1,6 +1,7 @@
 // micro-C example 1
 int g ;
 int h[3] ;
+float z ;
 void main(int n) {
   h[0] = 1;
   // h[4] = 5;

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\11706\\Desktop\\编程语言原理与应用\\plzoofs-master\\microc\\interpc.fsproj": {}
+    "D:\\zuccmicroc\\zuccMicroc\\microc\\interpc.fsproj": {}
   },
   "projects": {
-    "C:\\Users\\11706\\Desktop\\编程语言原理与应用\\plzoofs-master\\microc\\interpc.fsproj": {
+    "D:\\zuccmicroc\\zuccMicroc\\microc\\interpc.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\11706\\Desktop\\编程语言原理与应用\\plzoofs-master\\microc\\interpc.fsproj",
+        "projectUniqueName": "D:\\zuccmicroc\\zuccMicroc\\microc\\interpc.fsproj",
         "projectName": "interpc",
-        "projectPath": "C:\\Users\\11706\\Desktop\\编程语言原理与应用\\plzoofs-master\\microc\\interpc.fsproj",
+        "projectPath": "D:\\zuccmicroc\\zuccMicroc\\microc\\interpc.fsproj",
         "packagesPath": "C:\\Users\\11706\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\11706\\Desktop\\编程语言原理与应用\\plzoofs-master\\microc\\obj\\",
+        "outputPath": "D:\\zuccmicroc\\zuccMicroc\\microc\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\11706\\AppData\\Roaming\\NuGet\\NuGet.Config"
