@@ -26,6 +26,7 @@ and expr =                           // 表达式，右值
   | ConstFloat of float32            (* 定义浮点数 *)
   | ConstChar of char
   | ConstString of string
+  | Print of string * expr
   | Prim1 of string * expr           (* Unary primitive operator    *)
   | Prim2 of string * expr * expr    (* Binary primitive operator   *)
   | Andalso of expr * expr           (* Sequential and              *)
