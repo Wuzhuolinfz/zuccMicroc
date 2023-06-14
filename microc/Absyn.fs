@@ -16,18 +16,22 @@ type typ =
   | TypA of typ * int option         (* Array type                  *)
   | TypP of typ                      (* Pointer type                *)
   | TypeFloat
+  | TypS                            (* String *)
                                                                    
 and expr =                           // 表达式，右值                                                
   | Access of access                 (* x    or  *p    or  a[e]     *) //访问左值（右值）
   | Assign of access * expr          (* x=e  or  *p=e  or  a[e]=e   *)
   | Addr of access                   (* &x   or  &*p   or  &a[e]    *)
   | CstI of int                      (* Constant                    *)
+  | ConstFloat of float32            (* 定义浮点数 *)
+  | ConstChar of char
+  | ConstString of string
   | Prim1 of string * expr           (* Unary primitive operator    *)
   | Prim2 of string * expr * expr    (* Binary primitive operator   *)
   | Andalso of expr * expr           (* Sequential and              *)
   | Orelse of expr * expr            (* Sequential or               *)
   | Call of string * expr list       (* Function call f(...)        *)
-  | ConstFloat of float32            (* 定义浮点数 *)
+
                                                                    
 and access =                         //左值，存储的位置                                            
   | AccVar of string                 (* Variable access        x    *) 
