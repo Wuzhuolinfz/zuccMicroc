@@ -485,7 +485,13 @@ and callfun f es locEnv gloEnv store : int * store =
         bindVars (List.map snd paramdecs) vs (varEnv, nextloc) store1
 
     let (store3,c) = exec fBody fBodyEnv gloEnv store2 None
-    (-111, store3)
+    match c with
+        | Some(Return res)  -> 
+            if res.IsSome then 
+                let retVal = fst (eval res.Value locEnv gloEnv store3) in
+                    (retVal, store3) 
+            else (-111, store3) // interupt by return
+        | _                 -> (-112, store3)  // end with normal stmt
 
 (* Interpret a complete micro-C program by initializing the store
    and global environments, then invoking its `main' function.
