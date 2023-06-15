@@ -4,5 +4,5 @@ void main(int n) {
   String a;
   a = "aaa";
   //++n;
-  print n;
+  print a;
 }
