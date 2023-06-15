@@ -251,7 +251,7 @@ let initEnvAndStore (topdecs: topdec list) : locEnv * funEnv * store * controlSt
 (* ------------------------------------------------------------------- *)
 
 (* Interpreting micro-C statements *)
-
+//语法解释说明
 let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:controlStat): store * controlStat =
     match stmt with
     | If (e, stmt1, stmt2) ->
@@ -380,7 +380,7 @@ and stmtordec stmtordec locEnv gloEnv store (controlStat:controlStat)=
                                   (loc, setSto store3 loc1 loc2,controlStat)                   
 
 (* Evaluating micro-C expressions *)
-
+//计算表达式
 and eval e locEnv gloEnv store : int * store =
     match e with
     | Access acc ->

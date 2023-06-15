@@ -77,17 +77,8 @@
         - 生成器 generator, yield
         - 协程 coroutine
 
-1. 其他参考实现语言项目                        
-    - 命令式语言 NanoC 
-    - 对象式语言 NanoJ
-    - 函数式语言 NanoF
-    - 逻辑式语言 NanoL
 
-1. 项目分工表格
-- 1人项目权重为1.0
-- 2人项目权重和为 1.9
-- 3人项目权重和为 2.8
-- 个人总评成绩会参考权重
+
 请根据实际情况填写下表
 
 ## 以下的内容 放到项目文档中
@@ -110,11 +101,13 @@
 | char.float.string声明定义                  |   |      |      |
 | ++.--.+=.-=                           |     |      |      |
 | print/printf                          |     |      |      |
-| 语法                                       |     |      |      |
+
+| 语法                                       | 评分 | 备注 |      |
+|------------------------------------------|--------|------|-----|
 | switch-case                        |     |      |      |
 | 循环  for / while / do while       |     |      |      |
 | break continue                            |      |      |      |
-| return                                |      |      |      |
+| return函数结果                            |      |      |      |
 | 三目运算符?                            |      |      |      |
 
 
@@ -122,20 +115,134 @@
 
 1. 项目说明
 
-    - 项目 是基于现有的xxx代码
-        - 改进 xxx模块 功能1
-        - 改进 xxx模块 功能2
-        - 。。。。
-    - 项目 独立开发
-        - 独立开发了 xx 模块
-        - 。。。。
+    - 项目 是基于现有的plzoofs-master-microc代码
+
+            Absyn.fs抽象语法设计
+            CLex.fsl词法分析
+            Contcomp.fs编译器
+            CPar.fsy语法分析
+            interp.fs业务逻辑层
+            interpc.fsproj解释器运行
+            microcc.fsproj编译器运行
+            StackMachine.fs堆栈指令
+
 2. 解决技术要点说明
-    - 解决 xxx 问题1， 关键代码与步骤如下
-      - 。。。
-      - 。。。
-    - 解决 xxx 问题2， 关键代码与步骤如下
-      - 。。。
-      - 。。。
+    - 定义声明(char.float.string)
+      - 实现char、float、string的声明定义，
+      ```f#
+      //under Evaluating micro-C expressions
+      | CstI i -> (i, store)
+      | ConstChar c    -> ((int c), store)
+      | ConstString s  -> (s.Length,store)
+      | ConstFloat f ->
+            //类型转换
+           let bytes = System.BitConverter.GetBytes(float32(f))
+           let v = System.BitConverter.ToInt32(bytes, 0)
+         (v, store)
+      ```
+    - print
+      - 仿c语言格式,如：(print("%d",i))
+      ```f#
+        //under Evaluating micro-C expressions
+        | Print (op , e1) ->    let (i1,store1) = 
+                                eval e1 locEnv gloEnv store
+                            let res = 
+                                match op with
+                                | "%c"   -> (printf "%c " (char i1); i1)
+                                | "%d"   -> (printf "%d " i1; i1)  
+                                | "%s"   -> (printf "%s " (string i1); i1)
+                                | "%f"   -> (printf "%f " (float i1) ;i1)
+                                | _ -> failwith ("unknown primitive " + op)  //Error info 
+                            (res, store1)
+      ```
+    - ++.--.+=.-=
+      - c语言自运算
+      ```f#
+        //Evaluating micro-C expressions
+        | SimpleOpt (ope,acc,e) ->
+        let  (loc, store1) = access acc locEnv gloEnv store // 取acc地址
+        let  (i1)  = getSto store1 loc
+        let  (i2, store2) = eval e locEnv gloEnv store
+        let  res =
+            match ope with
+            | "Z++" -> i1 + i2
+            | "++Z" -> i1 + i2
+            | "Z--" -> i1 - i2
+            | "--Z" -> i1 - i2
+            | "+="  -> i1 + i2
+            | "-="  -> i1 - i2
+            | "*="  -> i1 * i2
+            | "/="  -> i1 / i2
+            | "%="  -> i1 % i2
+            | _ -> failwith ("unknown primitive " + ope)
+        (res, setSto store2 loc res)
+      ```
+    - switch case
+      - 选择
+      ```f#
+        //under exec
+        | Switch (e,body) ->  
+                let (res, store0) = eval e locEnv gloEnv store
+                let rec loop store1 controlStat = 
+                    match controlStat with
+                    | Some(Break)           -> (store1, None)          // 如果有遇到的break，结束该次循环并清除break标记
+                    | Some(Return _)        -> (store1, controlStat)   // 如果有未跳出的函数，
+                    | _                     ->                         // continue或者没有设置控制状态时，先检查条件然后继续运行
+                        let rec pick list =
+                            match list with
+                            | Case(e1,body1) :: tail -> 
+                                let (res2, store2) = eval e1 locEnv gloEnv store1
+                                if res2=res then exec body1 locEnv gloEnv store2 None
+                                            else pick tail
+                            | [] -> (store1,None)
+                            | Default( body1 ) :: tail -> 
+                                let (res3,store3) = exec body1 locEnv gloEnv store1 None
+                                pick tail
+                        (pick body)
+                loop store0 controlStat
+        | Case (e,body) -> exec body locEnv gloEnv store controlStat
+      ```
+    - for
+      - 循环
+      ```f#
+        | For ( dec,e1,opera,body ) ->
+        let (res , store0) = eval dec locEnv gloEnv store
+        let rec loop store1 controlStat = 
+             match controlStat with
+             | Some(Break)           -> (store1, None)          // 如果有遇到的break，结束该次循环并清除break标记
+             | Some(Return _)        -> (store1, controlStat)   // 如果有未跳出的函数，
+             | _                     ->                         // continue或者没有设置控制状态时，先检查条件然后继续运行
+                let (ifValue, store2) = eval e1 locEnv gloEnv store1
+                if ifValue<>0 then 
+                    let (store3,c) = exec body locEnv gloEnv store2 None
+                    let (oneend ,store4) = eval opera locEnv gloEnv store3
+                    loop store4 c
+                        else (store2,None)
+        loop store0 controlStat
+      ```
+    - return
+      - 返回函数的值
+      ```f#
+        //under callfun
+        match c with
+        | Some(Return res)  -> 
+            if res.IsSome then 
+                let retVal = fst (eval res.Value locEnv gloEnv store3) in
+                    (retVal, store3) 
+            else (-111, store3) // interupt by return
+        | _                 -> (-112, store3)  // end with normal stmt
+      ```
+    - ?
+      - 三目运算符
+      ```f#
+        //under eval
+        | Prim3 (e1, e2, e3) ->
+        let (i1, store1) = eval e1 locEnv gloEnv store
+        if i1 <> 0 then
+            eval e2 locEnv gloEnv store1
+        else
+            eval e3 locEnv gloEnv store1
+      ```
 3. 心得体会（结合自己情况具体说明）
 
      - 大项目开发过程心得
