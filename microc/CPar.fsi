@@ -46,6 +46,8 @@ type token =
   | WHILE
   | FOR
   | STRING
+  | BREAK
+  | CONTINUE
   | CSTSTRING of (string)
   | NAME of (string)
   | CSTCHAR of (char)
@@ -98,6 +100,8 @@ type tokenId =
     | TOKEN_WHILE
     | TOKEN_FOR
     | TOKEN_STRING
+    | TOKEN_BREAK
+    | TOKEN_CONTINUE
     | TOKEN_CSTSTRING
     | TOKEN_NAME
     | TOKEN_CSTCHAR

@@ -139,8 +139,8 @@ type VarEnv = (Var * typ) Env * int
 (* The function environment maps a function name to the function's label, 
    its return type, and its parameter declarations *)
 
-type Paramdecs = (typ * string) list
-type FunEnv = (label * typ option * Paramdecs) Env
+type Paramdecs = (typ * string) list  //函数参数
+type FunEnv = (label * typ option * Paramdecs) Env   //函数定义 名字 + 返回类型 + 函数参数
 
 (* Bind declared variable in varEnv and generate code to allocate it: *)
 
@@ -226,10 +226,14 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr 
           | (BDec code,  varEnv) :: sr -> code @ pass2 sr C
           | (BStmt stmt, varEnv) :: sr -> cStmt stmt varEnv funEnv (pass2 sr C)
       pass2 stmtsback (addINCSP(snd varEnv - fdepthend) C)
-    | Return None -> 
-      RET (snd varEnv - 1) :: deadcode C
-    | Return (Some e) -> 
-      cExpr e varEnv funEnv (RET (snd varEnv) :: deadcode C)
+    | Myctrl ctrl ->
+            match ctrl with
+            | Return x  -> 
+                if x.IsSome then 
+                  cExpr x.Value varEnv funEnv (RET (snd varEnv) :: deadcode C)
+                else 
+                  RET (snd varEnv - 1) :: deadcode C
+            | _         -> RET (snd varEnv - 1) :: deadcode C
 
 and bStmtordec stmtOrDec varEnv : bstmtordec * VarEnv =
     match stmtOrDec with 
@@ -238,7 +242,11 @@ and bStmtordec stmtOrDec varEnv : bstmtordec * VarEnv =
     | Dec (typ, x) ->
       let (varEnv1, code) = allocate Locvar (typ, x) varEnv 
       (BDec code, varEnv1)
-
+    | DecAndAssign (typ,x,e) -> 
+      let (varEnv1, code) = allocate Locvar (typ,x) varEnv
+      (BDec (cAccess (AccVar(x)) varEnv1 []  // cAccess 增加 x变量 对应的 的指令
+                (cExpr e varEnv1 [] (STI :: (addINCSP -1 code))) // 取出这个变量 给他赋值 
+            ), varEnv1)
 (* Compiling micro-C expressions: 
 
    * e       is the expression to compile

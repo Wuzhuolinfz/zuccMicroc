@@ -45,9 +45,15 @@ and stmt =
   | While of expr * stmt             (* While loop                  *)
   | For of expr * expr * expr * stmt
   | Expr of expr                     (* Expression statement   e;   *)
-  | Return of expr option            (* Return from method          *)
+  | Myctrl of control
   | Block of stmtordec list          (* Block: grouping and scope   *)
   // 语句块内部，可以是变量声明 或语句的列表                                                              
+
+                                     // break continue
+and control =
+  | Return of expr option            (* Return from method          *)
+  | Break
+  | Continue
 
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)
