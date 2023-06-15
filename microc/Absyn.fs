@@ -15,7 +15,7 @@ type typ =
   | TypC                             (* Type char                   *)
   | TypA of typ * int option         (* Array type                  *)
   | TypP of typ                      (* Pointer type                *)
-  | TypeFloat
+  | TypeFloat    
   | TypS                            (* String *)
                                                                    
 and expr =                           // 表达式，右值                                                
@@ -26,7 +26,7 @@ and expr =                           // 表达式，右值
   | ConstFloat of float32            (* 定义浮点数 *)
   | ConstChar of char
   | ConstString of string
-  | SimpleOpt of  string * access * expr
+  | SimpleOpt of  string * access * expr (* 简单运算-- ++ *)
   | Print of string * expr
   | Prim1 of string * expr           (* Unary primitive operator    *)
   | Prim2 of string * expr * expr    (* Binary primitive operator   *)
@@ -34,6 +34,7 @@ and expr =                           // 表达式，右值
   | Andalso of expr * expr           (* Sequential and              *)
   | Orelse of expr * expr            (* Sequential or               *)
   | Call of string * expr list       (* Function call f(...)        *)
+  | PrimPrint of char * expr 
 
                                                                    
 and access =                         //左值，存储的位置                                            
@@ -45,12 +46,12 @@ and stmt =
   | If of expr * stmt * stmt         (* Conditional                 *)
   | While of expr * stmt             (* While loop                  *)
   | DoWhile of  stmt * expr          (* DoWhile loop                *)
-  | For of expr * expr * expr * stmt
+  | For of expr * expr * expr * stmt (* For loop *)
   | Switch of expr * stmt list
   | Case of expr * stmt 
   | Default of stmt 
   | Expr of expr                     (* Expression statement   e;   *)
-  | Myctrl of control
+  | Myctrl of control                (* 将return、break、continue划分为Myctrl模块 *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
   // 语句块内部，可以是变量声明 或语句的列表                                                              
 

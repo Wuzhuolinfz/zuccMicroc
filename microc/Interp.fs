@@ -280,7 +280,19 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:
                     (store2,None) //退出循环返回 环境store2
 
         loop store controlStat
-
+    | DoWhile(body,e) -> 
+        let rec loop store1 controlStat=
+                match controlStat with
+                | Some(Break)           -> (store1, None)          // 如果有遇到的break，结束该次循环并清除break标记
+                | Some(Return _)        -> (store1, controlStat)   // 如果有未跳出的函数，
+                | _                     ->                         // continue或者没有设置控制状态时，先检查条件然后继续运行
+                    let (v, store2) = eval e locEnv gloEnv store1
+                    if v<>0 then 
+                        let (store3,c) = exec body locEnv gloEnv store2 None
+                        loop store3 c
+                    else  (store2,None)  //退出循环返回 环境store2
+        let (store5,c1) = exec body locEnv gloEnv store controlStat
+        loop store5 c1
     | Expr e ->
         // _ 表示丢弃e的值,返回 变更后的环境store1
         let (_, store1) = eval e locEnv gloEnv store
@@ -300,19 +312,7 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:
                     loop store4 c
                         else (store2,None)
         loop store0 controlStat
-    | DoWhile(body,e) -> 
-        let rec loop store1 controlStat=
-                match controlStat with
-                | Some(Break)           -> (store1, None)          // 如果有遇到的break，结束该次循环并清除break标记
-                | Some(Return _)        -> (store1, controlStat)   // 如果有未跳出的函数，
-                | _                     ->                         // continue或者没有设置控制状态时，先检查条件然后继续运行
-                    let (v, store2) = eval e locEnv gloEnv store1
-                    if v<>0 then 
-                        let (store3,c) = exec body locEnv gloEnv store2 None
-                        loop store3 c
-                    else  (store2,None)  //退出循环返回 环境store2
-        let (store5,c1) = exec body locEnv gloEnv store controlStat
-        loop store5 c1
+    
     | Switch (e,body) ->  
                 let (res, store0) = eval e locEnv gloEnv store
                 let rec loop store1 controlStat = 
@@ -393,16 +393,11 @@ and eval e locEnv gloEnv store : int * store =
     | CstI i -> (i, store)
     | ConstChar c    -> ((int c), store)
     | ConstString s  -> (s.Length,store)
+    | ConstFloat f ->
+        let bytes = System.BitConverter.GetBytes(float32(f))
+        let v = System.BitConverter.ToInt32(bytes, 0)
+        (v, store)
     | Addr acc -> access acc locEnv gloEnv store
-    | Print (op , e1) ->    let (i1,store1) = 
-                                eval e1 locEnv gloEnv store
-                            let res = 
-                                match op with
-                                | "%c"   -> (printf "%c " (char i1); i1)
-                                | "%d"   -> (printf "%d " i1; i1)  
-                                | "%s"   -> (printf "%s " (string i1); i1)
-                                | _ -> failwith ("unknown primitive " + op)  //Error info 
-                            (res, store1)
     | Prim1 (ope, e1) ->
         let (i1, store1) = eval e1 locEnv gloEnv store
 
@@ -415,8 +410,11 @@ and eval e locEnv gloEnv store : int * store =
             | "printc" ->
                 (printf "%c" (char i1)
                  i1)
+            | "printf" ->
+                (printf "%f" (System.BitConverter.ToSingle(System.BitConverter.GetBytes(int32 (i1)),0))
+                 i1)
             | _ -> failwith ("unknown primitive " + ope)
-
+ 
         (res, store1)
 
     | SimpleOpt (ope,acc,e) ->
@@ -443,10 +441,10 @@ and eval e locEnv gloEnv store : int * store =
 
         let res =
             match ope with
-            | "*" -> i1 * i2
-            | "+" -> i1 + i2
-            | "-" -> i1 - i2
-            | "/" -> i1 / i2
+            | "*" -> System.BitConverter.ToInt32( System.BitConverter.GetBytes(float32 ( (System.BitConverter.ToSingle(System.BitConverter.GetBytes(int32 (i1)),0)) * (System.BitConverter.ToSingle(System.BitConverter.GetBytes(int32 (i2)),0)) )) ,0 )
+            | "+" -> System.BitConverter.ToInt32( System.BitConverter.GetBytes(float32 ( (System.BitConverter.ToSingle(System.BitConverter.GetBytes(int32 (i1)),0)) + (System.BitConverter.ToSingle(System.BitConverter.GetBytes(int32 (i2)),0)) )) ,0 )
+            | "-" -> System.BitConverter.ToInt32( System.BitConverter.GetBytes(float32 ( (System.BitConverter.ToSingle(System.BitConverter.GetBytes(int32 (i1)),0)) - (System.BitConverter.ToSingle(System.BitConverter.GetBytes(int32 (i2)),0)) )) ,0 )
+            | "/" -> System.BitConverter.ToInt32( System.BitConverter.GetBytes(float32 ( (System.BitConverter.ToSingle(System.BitConverter.GetBytes(int32 (i1)),0)) / (System.BitConverter.ToSingle(System.BitConverter.GetBytes(int32 (i2)),0)) )) ,0 )
             | "%" -> i1 % i2
             | "==" -> if i1 = i2 then 1 else 0
             | "!=" -> if i1 <> i2 then 1 else 0
@@ -478,6 +476,16 @@ and eval e locEnv gloEnv store : int * store =
         else
             eval e2 locEnv gloEnv store1
     | Call (f, es) -> callfun f es locEnv gloEnv store
+    | Print (op , e1) ->    let (i1,store1) = 
+                                eval e1 locEnv gloEnv store
+                            let res = 
+                                match op with
+                                | "%c"   -> (printf "%c " (char i1); i1)
+                                | "%d"   -> (printf "%d " i1; i1)  
+                                | "%s"   -> (printf "%s " (string i1); i1)
+                                | "%f"   -> (printf "%f " (float i1) ;i1)
+                                | _ -> failwith ("unknown primitive " + op)  //Error info 
+                            (res, store1)
 
 and access acc locEnv gloEnv store : int * store =
     match acc with
@@ -510,7 +518,7 @@ and callfun f es locEnv gloEnv store : int * store =
     let (fBodyEnv, store2) =
         bindVars (List.map snd paramdecs) vs (varEnv, nextloc) store1
 
-    let (store3,c) = exec fBody fBodyEnv gloEnv store2 None
+    let (store3,c) = exec fBody fBodyEnv gloEnv store2 None  //break continue
     match c with
         | Some(Return res)  -> 
             if res.IsSome then 
