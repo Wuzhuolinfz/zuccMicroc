@@ -22,8 +22,8 @@ let nl = CstI 10 //  \n 的 ASCII 码
 %token <char> CSTCHAR
 %token <string> CSTSTRING NAME
 
-%token CHAR ELSE IF INT FLOAT NULL PRINT PRINTLN RETURN VOID WHILE FOR STRING BREAK CONTINUE DOWHILE DO
-%token PLUS MINUS TIMES DIV MOD SELFPLUS SELFMINUS SELFTIMES SELFDIV SELFMOD ADDONE MINUSONE
+%token CHAR ELSE IF INT FLOAT NULL PRINT PRINTLN RETURN VOID WHILE FOR STRING BREAK CONTINUE DOWHILE DO CASE SWITCH DEFAULT
+%token PLUS MINUS TIMES DIV MOD SELFPLUS SELFMINUS SELFTIMES SELFDIV SELFMOD ADDONE MINUSONE QUESTION COLON
 %token EQ NE GT LT GE LE
 %token NOT SEQOR SEQAND
 %token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP
@@ -38,6 +38,7 @@ let nl = CstI 10 //  \n 的 ASCII 码
 %left PLUS MINUS
 %left TIMES DIV MOD 
 %left SELFPLUS SELFMINUS SELFTIMES SELFDIV SELFMOD ADDONE MINUSONE
+%left QUESTION COLON
 %nonassoc NOT AMP 
 %nonassoc LBRACK          /* highest precedence  */
 
@@ -153,6 +154,7 @@ StmtM:  /* No unbalanced if-else */
   | Block                               { $1                   }
   | IF LPAR Expr RPAR StmtM ELSE StmtM  { If($3, $5, $7)       }
   | WHILE LPAR Expr RPAR StmtM          { While($3, $5)        }
+  | SWITCH LPAR Expr RPAR LBRACE StmtCase RBRACE        { Switch($3,$6)  }
   | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM { For($3,$5,$7,$9)  }
 ;
 
@@ -199,6 +201,7 @@ ExprNotAccess:
   | Expr LT    Expr                     { Prim2("<",  $1, $3) }
   | Expr GE    Expr                     { Prim2(">=", $1, $3) }
   | Expr LE    Expr                     { Prim2("<=", $1, $3) }
+  | Expr QUESTION Expr COLON Expr       { Prim3($1, $3, $5)   }
   | Expr SEQAND Expr                    { Andalso($1, $3)     }
   | Expr SEQOR  Expr                    { Orelse($1, $3)      }
 ;
@@ -227,6 +230,12 @@ Access:    //可以为左值的情况
 Exprs:
     /* empty */                         { []       }
   | Exprs1                              { $1       }
+;
+
+StmtCase:
+    CASE AtExprNotAccess COLON StmtM               { [Case($2,$4)]    }  
+  | DEFAULT COLON StmtM                            { [Default($3)]    }
+  | CASE AtExprNotAccess COLON StmtM StmtCase      { Case($2,$4) :: $5}
 ;
 
 Exprs1:

@@ -33,7 +33,10 @@ let keyword s =
     | "while"   -> WHILE 
     | "dowhile" -> DOWHILE 
     | "do"      -> DO  
-    | "for"     -> FOR    
+    | "for"     -> FOR  
+    | "switch"  -> SWITCH
+    | "case"    -> CASE    
+    | "default" -> DEFAULT  
     | "break"   -> BREAK
     | "continue"-> CONTINUE    
     | _         -> NAME s   // 缺省情况，是标识符的名字，如 函数名，变量名等
@@ -86,6 +89,8 @@ rule Token = parse          // 每个 规则rule 会生成为一个函数，函�
   | "%="            { SELFMOD }
   | "=="            { EQ } 
   | "!="            { NE }
+  | '?'             { QUESTION }
+  | ':'             { COLON }
   | '>'             { GT }
   | '<'             { LT }
   | ">="            { GE }

@@ -313,6 +313,26 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:
                     else  (store2,None)  //退出循环返回 环境store2
         let (store5,c1) = exec body locEnv gloEnv store controlStat
         loop store5 c1
+    | Switch (e,body) ->  
+                let (res, store0) = eval e locEnv gloEnv store
+                let rec loop store1 controlStat = 
+                    match controlStat with
+                    | Some(Break)           -> (store1, None)          // 如果有遇到的break，结束该次循环并清除break标记
+                    | Some(Return _)        -> (store1, controlStat)   // 如果有未跳出的函数，
+                    | _                     ->                         // continue或者没有设置控制状态时，先检查条件然后继续运行
+                        let rec pick list =
+                            match list with
+                            | Case(e1,body1) :: tail -> 
+                                let (res2, store2) = eval e1 locEnv gloEnv store1
+                                if res2=res then exec body1 locEnv gloEnv store2 None
+                                            else pick tail
+                            | [] -> (store1,None)
+                            | Default( body1 ) :: tail -> 
+                                let (res3,store3) = exec body1 locEnv gloEnv store1 None
+                                pick tail
+                        (pick body)
+                loop store0 controlStat
+    | Case (e,body) -> exec body locEnv gloEnv store controlStat
     | Block stmts ->
 
         // 语句块 解释辅助函数 loop
@@ -437,6 +457,12 @@ and eval e locEnv gloEnv store : int * store =
             | _ -> failwith ("unknown primitive " + ope)
 
         (res, store2)
+    | Prim3 (e1, e2, e3) ->
+        let (i1, store1) = eval e1 locEnv gloEnv store
+        if i1 <> 0 then
+            eval e2 locEnv gloEnv store1
+        else
+            eval e3 locEnv gloEnv store1
     | Andalso (e1, e2) ->
         let (i1, store1) as res = eval e1 locEnv gloEnv store
 

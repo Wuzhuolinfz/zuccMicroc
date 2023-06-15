@@ -314,6 +314,46 @@ and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : inst
             | ">"   -> SWAP :: LT :: C
             | "<="  -> SWAP :: LT :: addNOT C
             | _     -> failwith "unknown primitive 2"))
+    | Prim3 (e1, e2, e3) ->
+      let (jumpend, C1) = makeJump C
+      let (labelse, C2) = addLabel (cExpr e3 varEnv funEnv C1)
+      cExpr e1 varEnv funEnv (IFZERO labelse 
+      :: cExpr e2 varEnv funEnv (addJump jumpend C2))
+    | SimpleOpt(ope,acc,e)->             
+        cExpr e varEnv funEnv  
+            (match ope with
+            | "+=" -> 
+                let ass = Assign (acc,Prim2("+",Access acc, e))
+                cExpr ass varEnv funEnv (addINCSP -1 C)
+            | "-=" ->
+                let ass = Assign (acc,Prim2("-",Access acc, e))
+                cExpr ass varEnv funEnv (addINCSP -1 C)
+            | "++Z" -> 
+                let ass = Assign (acc,Prim2("+",Access acc, e))
+                let C1 = cExpr ass varEnv funEnv C
+                CSTI 1 :: ADD :: (addINCSP -1 C1)
+            | "Z++" -> 
+                let ass = Assign (acc,Prim2("+",Access acc, e))
+                let C1 = cExpr ass varEnv funEnv C
+                CSTI 1 :: ADD :: (addINCSP -1 C1)
+            | "--Z" ->
+                let ass = Assign (acc,Prim2("-",Access acc, e))
+                let C1 = cExpr ass varEnv funEnv C
+                CSTI 1 :: SUB :: (addINCSP -1 C1)  
+            | "Z--" ->
+                let ass = Assign (acc,Prim2("-",Access acc, e))
+                let C1 = cExpr ass varEnv funEnv C
+                CSTI 1 :: SUB :: (addINCSP -1 C1)      
+            | "*=" -> 
+                let ass = Assign (acc,Prim2("*",Access acc, e))
+                cExpr ass varEnv funEnv (addINCSP -1 C)
+            | "/=" ->
+                let ass = Assign (acc,Prim2("/",Access acc, e))
+                cExpr ass varEnv funEnv (addINCSP -1 C)
+            | "%=" ->
+                let ass = Assign (acc,Prim2("%",Access acc, e))
+                cExpr ass varEnv funEnv (addINCSP -1 C)
+            | _         -> failwith "Error: unknown unary operator")
     | Andalso(e1, e2) ->
       match C with
       | IFZERO lab :: _ ->

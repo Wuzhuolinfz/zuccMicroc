@@ -30,6 +30,7 @@ and expr =                           // 表达式，右值
   | Print of string * expr
   | Prim1 of string * expr           (* Unary primitive operator    *)
   | Prim2 of string * expr * expr    (* Binary primitive operator   *)
+  | Prim3 of expr * expr * expr      (*         三目运算符           *)
   | Andalso of expr * expr           (* Sequential and              *)
   | Orelse of expr * expr            (* Sequential or               *)
   | Call of string * expr list       (* Function call f(...)        *)
@@ -45,6 +46,9 @@ and stmt =
   | While of expr * stmt             (* While loop                  *)
   | DoWhile of  stmt * expr          (* DoWhile loop                *)
   | For of expr * expr * expr * stmt
+  | Switch of expr * stmt list
+  | Case of expr * stmt 
+  | Default of stmt 
   | Expr of expr                     (* Expression statement   e;   *)
   | Myctrl of control
   | Block of stmtordec list          (* Block: grouping and scope   *)
