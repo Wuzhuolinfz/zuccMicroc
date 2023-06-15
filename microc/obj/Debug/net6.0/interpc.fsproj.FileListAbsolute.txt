@@ -26,6 +26,10 @@ C:\Users\11706\Desktop\编程语言原理与应用\plzoofs-master\microc\obj\Deb
 C:\Users\11706\Desktop\编程语言原理与应用\plzoofs-master\microc\obj\Debug\net6.0\interpc.dll
 C:\Users\11706\Desktop\编程语言原理与应用\plzoofs-master\microc\obj\Debug\net6.0\interpc.pdb
 C:\Users\11706\Desktop\编程语言原理与应用\plzoofs-master\microc\obj\Debug\net6.0\interpc.genruntimeconfig.cache
+D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.fsproj.AssemblyReference.cache
+D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.AssemblyInfoInputs.cache
+D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.AssemblyInfo.fs
+D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.fsproj.CoreCompileInputs.cache
 D:\zuccmicroc\zuccMicroc\microc\bin\Debug\net6.0\interpc.exe
 D:\zuccmicroc\zuccMicroc\microc\bin\Debug\net6.0\interpc.deps.json
 D:\zuccmicroc\zuccMicroc\microc\bin\Debug\net6.0\interpc.runtimeconfig.json
@@ -46,10 +50,6 @@ D:\zuccmicroc\zuccMicroc\microc\bin\Debug\net6.0\ru\FSharp.Core.resources.dll
 D:\zuccmicroc\zuccMicroc\microc\bin\Debug\net6.0\tr\FSharp.Core.resources.dll
 D:\zuccmicroc\zuccMicroc\microc\bin\Debug\net6.0\zh-Hans\FSharp.Core.resources.dll
 D:\zuccmicroc\zuccMicroc\microc\bin\Debug\net6.0\zh-Hant\FSharp.Core.resources.dll
-D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.fsproj.AssemblyReference.cache
-D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.AssemblyInfoInputs.cache
-D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.AssemblyInfo.fs
-D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.fsproj.CoreCompileInputs.cache
 D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.fsproj.CopyComplete
 D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.dll
 D:\zuccmicroc\zuccMicroc\microc\obj\Debug\net6.0\interpc.pdb

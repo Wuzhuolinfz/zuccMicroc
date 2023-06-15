@@ -48,6 +48,8 @@ type token =
   | STRING
   | BREAK
   | CONTINUE
+  | DOWHILE
+  | DO
   | CSTSTRING of (string)
   | NAME of (string)
   | CSTCHAR of (char)
@@ -102,6 +104,8 @@ type tokenId =
     | TOKEN_STRING
     | TOKEN_BREAK
     | TOKEN_CONTINUE
+    | TOKEN_DOWHILE
+    | TOKEN_DO
     | TOKEN_CSTSTRING
     | TOKEN_NAME
     | TOKEN_CSTCHAR

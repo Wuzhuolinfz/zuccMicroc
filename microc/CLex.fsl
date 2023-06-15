@@ -30,7 +30,9 @@ let keyword s =
     | "return"  -> RETURN
     | "true"    -> CSTBOOL 1
     | "void"    -> VOID 
-    | "while"   -> WHILE  
+    | "while"   -> WHILE 
+    | "dowhile" -> DOWHILE 
+    | "do"      -> DO  
     | "for"     -> FOR    
     | "break"   -> BREAK
     | "continue"-> CONTINUE    
