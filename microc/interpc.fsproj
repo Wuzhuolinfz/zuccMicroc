@@ -30,7 +30,8 @@
 </ItemGroup>
 <ItemGroup>
 
-<MyItem Include="example\ex9.c" Args ="8"/>
+<!-- <MyItem Include="example\ex9.c" Args ="8"/> -->
+<MyItem Include="test\testfor.c" Args = "8"/>
  <!-- <MyItem Include="example\variable.c" Args ="8"/>  -->
  <!-- <MyItem Include="example\function1.c" Args ="8"/>  -->
 <!-- <MyItem Include="example\ex1.c" Args ="8"/> -->
