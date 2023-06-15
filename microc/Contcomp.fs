@@ -104,6 +104,16 @@ let rec addCST i C =
     | (_, IFNZRO lab :: C1) -> addGOTO lab C1
     | _                     -> CSTI i :: C
             
+let rec addCSTC i C =
+    match (i, C) with
+    | _                     -> (CSTC ((int32)(System.BitConverter.ToInt16(System.BitConverter.GetBytes(char(i)), 0)))) :: C
+
+let rec addCSTS (s:string) C =
+    match (s, C) with
+    | _                     -> let mutable list =[];
+                               for i = 0 to s.Length do
+                                   list <- (int (s.Chars(i)))::list
+                               (CSTS list) :: C         
 (* ------------------------------------------------------------------- *)
 
 (* Simple environment operations *)
@@ -142,6 +152,10 @@ let allocate (kind : int -> Var) (typ, x) (varEnv : VarEnv) : VarEnv * instr lis
       let newEnv = ((x, (kind (fdepth+i), typ)) :: env, fdepth+i+1)
       let code = [INCSP i; GETSP; CSTI (i-1); SUB]
       (newEnv, code)
+    | TypS         ->
+        let newEnv = ((x, (kind (fdepth+128), typ)) :: env, fdepth+128+1)
+        let code = [INCSP 128; GETSP; CSTI (128-1); SUB]
+        (newEnv, code)
     | _ -> 
       let newEnv = ((x, (kind (fdepth), typ)) :: env, fdepth+1)
       let code = [INCSP 1]
@@ -245,7 +259,15 @@ and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : inst
     | Access acc     -> cAccess acc varEnv funEnv (LDI :: C)
     | Assign(acc, e) -> cAccess acc varEnv funEnv (cExpr e varEnv funEnv (STI :: C))
     | CstI i         -> addCST i C
+    | ConstChar i    -> addCST (int i) C   //字符
+    | ConstString s     -> addCST (int s) C     //字符串
     | Addr acc       -> cAccess acc varEnv funEnv C
+    | Print(ope,e1)  -> // print("%d",i)
+      cExpr e1 varEnv funEnv
+           (match ope with
+            | "%d"  -> PRINTI :: C
+            | "%c"  -> PRINTC :: C
+            | _        -> failwith "unknown primitive 1")
     | Prim1(ope, e1) ->
       cExpr e1 varEnv funEnv
           (match ope with

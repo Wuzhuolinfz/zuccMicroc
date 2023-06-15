@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "D:\\zuccmicroc\\zuccMicroc\\microc\\machine.csproj": {}
+    "D:\\zuccmicroc\\zuccMicroc\\microc\\microcc.fsproj": {}
   },
   "projects": {
-    "D:\\zuccmicroc\\zuccMicroc\\microc\\machine.csproj": {
+    "D:\\zuccmicroc\\zuccMicroc\\microc\\microcc.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\zuccmicroc\\zuccMicroc\\microc\\machine.csproj",
-        "projectName": "machine",
-        "projectPath": "D:\\zuccmicroc\\zuccMicroc\\microc\\machine.csproj",
+        "projectUniqueName": "D:\\zuccmicroc\\zuccMicroc\\microc\\microcc.fsproj",
+        "projectName": "microcc",
+        "projectPath": "D:\\zuccmicroc\\zuccMicroc\\microc\\microcc.fsproj",
         "packagesPath": "C:\\Users\\11706\\.nuget\\packages\\",
         "outputPath": "D:\\zuccmicroc\\zuccMicroc\\microc\\obj\\",
         "projectStyle": "PackageReference",
@@ -20,6 +20,7 @@
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files\\dotnet\\sdk\\6.0.406\\FSharp\\library-packs": {},
           "https://nuget.cdn.azure.cn/v3/index.json": {}
         },
         "frameworks": {
@@ -27,16 +28,24 @@
             "targetAlias": "net6.0",
             "projectReferences": {}
           }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
         }
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "FSharp.Core": {
+              "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[6.0.7, )",
+              "generatePathProperty": true
+            },
+            "FsLexYacc": {
+              "target": "Package",
+              "version": "[10.0.0, )",
+              "generatePathProperty": true
+            }
+          },
           "imports": [
             "net461",
             "net462",
