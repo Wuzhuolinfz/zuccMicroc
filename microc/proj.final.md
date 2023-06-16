@@ -12,69 +12,7 @@
 ## 实验内容
 
 
-1. 评分方式，以下为起始评分     
-    - 按 及格 中 良 优 参考计分，最终看完成水平。
-          60 70 80 90
-  - [参考任务](https://gitee.com/sigcc/plzoofs/blob/master/microc/task.md)
-    - 优秀
-        - 参与实际的开源编译器项目
-          - v rust julia 等
-        - 自行完整实现一个较复杂的语言 
-          - 生成  中间语言、汇编 
-          - 实现高级的语言特性
-            - 按特性实现难度给分
-    - 良 完整实现一个简单语言   
-        - 词法/语法/语义检查，中间代码IR,栈式虚拟机  
-    - 中 实现一个简单语言
-        - 实现 词法/语法/语义（类型检查，中间语言AST,IR）
-    - 及格  修改实现一个简单语言
-        - 修改 现有项目 简单的词法/语法，必须理解原来的代码
-        - 实现需要包括解释器和编译器
-
-1. 提交内容
-    - 项目报告
-        - 文档结构 [参考项目结构](https://bb.zucc.edu.cn/bbcswebdav/users/j04014/PLC/final/columbia.microc.llvm.proj.rar)
-    - 项目源代码（测试代码）
-    - [参考项目](https://bb.zucc.edu.cn/bbcswebdav/users/j04014/PLC/final21)
-1. 建议改进列表（可选择其中部分加以）
-    - 词法部分
-        - 修改注释的表示方式，如：
-            - (*  *) 
-            - //
-            - /* */
-        - 修改常量定义
-            - 字符串常量  （参考python语法）
-                - 单引号' ' 双引号 ""  三引号 '''
-            - 数值常量 （参考c语法）
-                - 二进制  0b0101， 八进制0o777  十六0xFFDA
-        - 修改标识符定义
-            - 类型名称 以大写开头
-            - 变量名以小写开头
-            - 两个下划线开头的名字__是内部保留，不允许
-    - 语法部分
-        - if的多种方式 
-            - switch case
-        - 循环的多种方式 
-            - for / while / do while/ until 
-        -  ? : 表达式  (C语言)
-        - for  in 表达式
-        - 匿名 lambda 函数（参考Python 或 Javascript）
-
-    - 语义部分
-        - 类型检查，类型推理
-        - 支持嵌套函数
-        - 动态作用域，静态作用域
-        - 闭包支持
-        - 模式匹配支持
-        - 中间代码生成 AST，四元式，三元式，llvm
-        - 生成器 generator, yield
-        - 协程 coroutine
-
-
-
-请根据实际情况填写下表
-
-## 以下的内容 放到项目文档中
+## 小组成员
 
 | 姓名 |学号 |班级 |任务|权重|
 | :----------- | :-----------: |  ---: |   ---: |   ---: |
@@ -91,24 +29,26 @@
 
 | 词法                                       | 评分 | 备注 |      |
 | ------------------------------------------ | ---- | ---- | ---- |
-| char.float.string声明定义                  |   |      |      |
-| ++.--.+=.-=                           |     |      |      |
-| print/printf                          |     |      |      |
+| char.float声明定义                  | 3  | float仅解释器实现,支持+-*/   |      |
+| ++.--.+=.-=                           |  5   | C语言自增自减运算     |      |
+| print                               |    2 |  c语言形式 ("%d",x)    |      |
 
 | 语法                                       | 评分 | 备注 |      |
 |------------------------------------------|--------|------|-----|
-| switch-case                        |     |      |      |
-| 循环  for / while / do while       |     |      |      |
-| 修改环境变量break continue return          |      |      |      |
-| return函数结果                            |      |      |      |
-| 三目运算符?                            |      |      |      |
+| switch-case                        |  3   | 仅解释器实现     |      |
+| 循环  for / while / do while       |  5   |      |      |
+| 修改环境变量break continue return          |   4   | 全局环境加入ctrl，编译器未实现 |      |
+| return函数结果                            |   3   | 补解释器缺的     |      |
+| 三目运算符?                            |   5   |      |      |
 
 
 
 
 1. 项目说明
 
-    - 项目 是基于现有的plzoofs-master-microc代码
+    - 简介： 项目是基于现有的plzoofs-master-microc代码
+
+        解释器需要按照自己的思路设计词法分析器，语法分析器，以及变量定义，搭建框架等等。
 
             Absyn.fs抽象语法设计
             CLex.fsl词法分析
@@ -133,6 +73,20 @@
            let v = System.BitConverter.ToInt32(bytes, 0)
          (v, store)
       ```
+      test/char.c
+      ```c
+        char a;
+        void main() {
+        char b;
+        char c='c';
+        a='a';
+        b='b';
+        print("%c",a);
+        print("%c",b);
+        print("%c",c);
+        }
+      ```
+      ![charc](./img/charc.png)
     - print
       - 仿c语言格式,如：(print("%d",i))
       ```f#
@@ -170,6 +124,24 @@
             | _ -> failwith ("unknown primitive " + ope)
         (res, setSto store2 loc res)
       ```
+      test/selfplus.c
+      ```c
+        void main(int n) {
+        n++;
+        print("%d",n+=4);
+        
+        }
+      ```
+      ![selfplus](./img/selfplus.png)
+    - controlStat
+      - 全局环境中加入控制语法ctrl
+      ```f#
+        //undercircle
+        match controlStat with
+             | Some(Break)           -> (store1, None)          // 如果有遇到的break，结束该次循环并清除break标记
+             | Some(Return _)        -> (store1, controlStat)   // 如果有未跳出的函数，
+             | _      //  continue或者没有设置控制状态时，先检查条件然后继续运行
+      ```
     - switch case
       - 选择
       ```f#
@@ -195,6 +167,20 @@
                 loop store0 controlStat
         | Case (e,body) -> exec body locEnv gloEnv store controlStat
       ```
+      test/switch.c
+      ```c
+        void main() {
+        int n=5;
+        switch(n){
+            case 1: n++;
+            case 2: n--;
+            case 5: n=n+3;
+            case 8: n=1;
+        }
+        print n;
+        }
+      ```
+      ![switch](./img/switch.png)
     - for
       - 循环
       ```f#
@@ -213,7 +199,20 @@
                         else (store2,None)
         loop store0 controlStat
       ```
-    - return
+      test/testfor.c
+      ```c
+        void main() {
+        int n=5;
+        int i;
+        for (i = 1; i < n; i=i+1)
+        {
+            print("%d",i);
+        }
+        
+        }
+      ```
+      ![testfor](./img/testfor.png)
+    - return(method)
       - 返回函数的值
       ```f#
         //under callfun
@@ -225,6 +224,21 @@
             else (-111, store3) // interupt by return
         | _                 -> (-112, store3)  // end with normal stmt
       ```
+      test/return.c
+      ```c
+        void main(int n) {
+        int q;
+        q = fun(n);
+        print("%d",q);
+
+        }
+
+        int fun(int i){
+        i=i+7;
+        return i;
+        }
+      ```
+      ![return](./img/return.png)
     - ?
       - 三目运算符
       ```f#
@@ -236,6 +250,16 @@
         else
             eval e3 locEnv gloEnv store1
       ```
+      test/prim3.c
+      ```c
+        void main() {
+        int n=2;
+        if(n ? 1:0){
+            print("%d",n);
+        }
+        }
+      ```
+      ![prim3](./img/prim3.png)
 3. 心得体会（结合自己情况具体说明）
 
      - 大项目开发过程心得

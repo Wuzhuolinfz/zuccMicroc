@@ -352,7 +352,7 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:
                         //语句块,解释 第1条语句s1
                         // 调用loop 用变更后的环境 解释后面的语句 sr.
                         | s1 :: sr -> loop sr (stmtordec s1 locEnv gloEnv store controlStat)
-                   
+                    
         loop stmts (locEnv, store, controlStat)
 
     //
