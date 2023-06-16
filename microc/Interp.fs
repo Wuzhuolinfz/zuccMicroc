@@ -104,6 +104,7 @@ type address = int
 
 type store = Map<address, int>
 
+//全局环境声明
 type controlStat = control option
 
 //空存储
@@ -298,6 +299,7 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:
         let (_, store1) = eval e locEnv gloEnv store
         (store1 , controlStat)
 
+    //for循环，参考while
     | For ( dec,e1,opera,body ) ->
         let (res , store0) = eval dec locEnv gloEnv store
         let rec loop store1 controlStat = 
@@ -312,7 +314,8 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:
                     loop store4 c
                         else (store2,None)
         loop store0 controlStat
-    
+
+    //switch-case选择
     | Switch (e,body) ->  
                 let (res, store0) = eval e locEnv gloEnv store
                 let rec loop store1 controlStat = 
@@ -337,7 +340,7 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:
 
         // 语句块 解释辅助函数 loop
         let rec loop ss (locEnv, store,(controlStat:controlStat)) =
-            if controlStat.IsSome then
+            if controlStat.IsSome then  //如果有ctrl符在里面：
                 let stat = controlStat.Value in
                     match stat with
                         | Break
@@ -352,6 +355,7 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:
                    
         loop stmts (locEnv, store, controlStat)
 
+    //
     | Myctrl ctrl -> 
         match ctrl with
             | Return x  -> 
@@ -360,7 +364,7 @@ let rec exec stmt (locEnv: locEnv) (gloEnv: gloEnv) (store: store) (controlStat:
                         (snd retVal, Some(Return (Some (CstI (fst retVal))))) 
                 else (store, Some(ctrl))
             | _         -> (store, Some(ctrl))    
-    // | Return _ -> failwith "return not implemented" // 解释器没有实现 return
+
 
 and stmtordec stmtordec locEnv gloEnv store (controlStat:controlStat)=
     match stmtordec with
@@ -455,6 +459,7 @@ and eval e locEnv gloEnv store : int * store =
             | _ -> failwith ("unknown primitive " + ope)
 
         (res, store2)
+    //三目运算
     | Prim3 (e1, e2, e3) ->
         let (i1, store1) = eval e1 locEnv gloEnv store
         if i1 <> 0 then
@@ -520,7 +525,7 @@ and callfun f es locEnv gloEnv store : int * store =
 
     let (store3,c) = exec fBody fBodyEnv gloEnv store2 None  //break continue
     match c with
-        | Some(Return res)  -> 
+        | Some(Return res)  ->    //返回函数的值
             if res.IsSome then 
                 let retVal = fst (eval res.Value locEnv gloEnv store3) in
                     (retVal, store3) 

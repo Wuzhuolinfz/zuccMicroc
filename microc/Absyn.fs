@@ -56,7 +56,7 @@ and stmt =
   // 语句块内部，可以是变量声明 或语句的列表                                                              
 
                                      // break continue
-and control =
+and control =                        //修改环境变量
   | Return of expr option            (* Return from method          *)
   | Break
   | Continue

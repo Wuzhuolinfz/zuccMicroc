@@ -30,14 +30,7 @@
     - 及格  修改实现一个简单语言
         - 修改 现有项目 简单的词法/语法，必须理解原来的代码
         - 实现需要包括解释器和编译器
-1. - 完成文档为 md格式，请预览并确保格式正确。 
-        - 缩进，代码，图片，突出显示 的正确markdown语法
-        - 翻译专业词汇标准，请到图书馆查找相关翻译的编译书籍，部分书籍有专业术语表。 
-    - columbia 
-    - PLC
-    - ssw
-    - yale
-   
+
 1. 提交内容
     - 项目报告
         - 文档结构 [参考项目结构](https://bb.zucc.edu.cn/bbcswebdav/users/j04014/PLC/final/columbia.microc.llvm.proj.rar)
@@ -106,7 +99,7 @@
 |------------------------------------------|--------|------|-----|
 | switch-case                        |     |      |      |
 | 循环  for / while / do while       |     |      |      |
-| break continue                            |      |      |      |
+| 修改环境变量break continue return          |      |      |      |
 | return函数结果                            |      |      |      |
 | 三目运算符?                            |      |      |      |
 
