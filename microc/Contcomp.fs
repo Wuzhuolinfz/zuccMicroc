@@ -28,7 +28,7 @@ open StackMachine
 (* The intermediate representation between passes 1 and 2 above:  *)
 
 type bstmtordec =
-     | BDec of instr list                  (* Declaration of local variable  *)
+     | BDec of instr list                  (* 局部变量声明 Declaration of local variable  *)  
      | BStmt of stmt                       (* A statement                    *)
 
 (* ------------------------------------------------------------------- *)
@@ -128,8 +128,8 @@ let rec lookup env x =
 (* A global variable has an absolute address, a local one has an offset: *)
 
 type Var = 
-    | Glovar of int                   (* absolute address in stack           *)
-    | Locvar of int                   (* address relative to bottom of frame *)
+    | Glovar of int                   (* absolute address in stack           *)  //绝对地址
+    | Locvar of int                   (* address relative to bottom of frame *)  //相对地址
 
 (* The variable environment keeps track of global and local variables, and 
    keeps track of next available offset for local variables *)

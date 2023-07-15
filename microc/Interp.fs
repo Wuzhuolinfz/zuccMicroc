@@ -104,7 +104,7 @@ type address = int
 
 type store = Map<address, int>
 
-//全局环境声明
+//全局环境声明ctrl
 type controlStat = control option
 
 //空存储
